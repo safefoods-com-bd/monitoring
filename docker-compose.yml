@@ -5,7 +5,7 @@ services:
     image: prom/prometheus
     container_name: prometheus
     ports:
-      - 9090:9090
+      - "9090" # Only exposed internally, not to host
     volumes:
       - ./prometheus-config.yml:/etc/prometheus/prometheus.yml
       - prometheus-storage:/prometheus
@@ -29,10 +29,23 @@ services:
     image: grafana/loki:latest
     container_name: loki
     ports:
-      - 3100:3100
+      - "3100" # Only exposed internally, not to host
     volumes:
       - ./loki-config.yml:/etc/loki/local-config.yaml
     command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - monitoring-backend
+
+  tempo:
+    container_name: tempo
+    image: grafana/tempo:latest
+    ports:
+      - "3200" # HTTP UI & API - only exposed internally, not to host
+      - "4317" # OTLP gRPC receiver - only exposed internally, not to host
+      - "4318" # OTLP HTTP receiver - only exposed internally, not to host
+    volumes:
+      - ./tempo-config.yaml:/etc/tempo.yaml
+    command: ["-config.file=/etc/tempo.yaml"]
     networks:
       - monitoring-backend
 
