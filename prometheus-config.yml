@@ -4,5 +4,10 @@ global:
 scrape_configs:
   - job_name: "compress-api"
     static_configs:
-      - targets:
-          ["212.28.189.176:8000", "212.28.189.176:8001", "212.28.189.176:8002"]
+      - targets: ["212.28.189.176:8000"]
+  - job_name: "bioinnova-api"
+    static_configs:
+      - targets: ["212.28.189.176:8001"]
+  - job_name: "aiaxio-api"
+    static_configs:
+      - targets: ["212.28.189.176:8002"]
