@@ -11,3 +11,6 @@ scrape_configs:
   - job_name: "aiaxio-api"
     static_configs:
       - targets: ["212.28.189.176:8002"]
+  - job_name: "pqsjapan"
+    static_configs:
+      - targets: ["pqsjapan.jp"]
