@@ -6,11 +6,19 @@ services:
     container_name: prometheus
     ports:
       - 9090:9090
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=7d
+      - --storage.tsdb.retention.size=0
+      - --storage.tsdb.wal-compression
+      - --web.enable-lifecycle
     volumes:
-      - ./prometheus-config.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus-config.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus-storage:/prometheus
     networks:
       - monitoring-backend
+    restart: unless-stopped
 
   grafana:
     image: grafana/grafana
@@ -24,6 +32,7 @@ services:
       - grafana-storage:/var/lib/grafana
     networks:
       - monitoring-backend
+    restart: unless-stopped
 
   loki:
     image: grafana/loki:latest
@@ -31,23 +40,25 @@ services:
     ports:
       - 3100:3100
     volumes:
-      - ./loki-config.yml:/etc/loki/local-config.yaml
+      - ./loki-config.yml:/etc/loki/local-config.yaml:ro
     command: -config.file=/etc/loki/local-config.yaml
     networks:
       - monitoring-backend
+    restart: unless-stopped
 
   tempo:
     container_name: tempo
     image: grafana/tempo:latest
     ports:
       - "3200:3200" # HTTP UI & API
-      - "4317:4317" # OTLP gRPC receiver (changed from 4317 to avoid conflict)
-      - "4318:4318" # OTLP HTTP receiver (changed from 4318 to avoid conflict)
+      - "4317:4317" # OTLP gRPC receiver
+      - "4318:4318" # OTLP HTTP receiver
     volumes:
-      - ./tempo-config.yaml:/etc/tempo.yaml
+      - ./tempo-config.yaml:/etc/tempo.yaml:ro
     command: ["-config.file=/etc/tempo.yaml"]
     networks:
       - monitoring-backend
+    restart: unless-stopped
 
 networks:
   monitoring-backend:
@@ -55,4 +66,8 @@ networks:
 
 volumes:
   grafana-storage:
+    external: true
+    name: monit_grafana-storage
   prometheus-storage:
+    external: true
+    name: monit_prometheus-storage
