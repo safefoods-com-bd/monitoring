@@ -17,7 +17,7 @@ services:
       - ./prometheus-config.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus-storage:/prometheus
     networks:
-      - monitoring-backend
+      - safefoods-app-network
     restart: unless-stopped
 
   grafana:
@@ -31,7 +31,7 @@ services:
     volumes:
       - grafana-storage:/var/lib/grafana
     networks:
-      - monitoring-backend
+      - safefoods-app-network
     restart: unless-stopped
 
   loki:
@@ -43,7 +43,7 @@ services:
       - ./loki-config.yml:/etc/loki/local-config.yaml:ro
     command: -config.file=/etc/loki/local-config.yaml
     networks:
-      - monitoring-backend
+      - safefoods-app-network
     restart: unless-stopped
 
   tempo:
@@ -57,12 +57,12 @@ services:
       - ./tempo-config.yaml:/etc/tempo.yaml:ro
     command: ["-config.file=/etc/tempo.yaml"]
     networks:
-      - monitoring-backend
+      - safefoods-app-network
     restart: unless-stopped
 
 networks:
-  monitoring-backend:
-    driver: bridge
+  safefoods-app-network:
+    external: true
 
 volumes:
   grafana-storage:

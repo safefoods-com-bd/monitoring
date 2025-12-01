@@ -2,15 +2,9 @@ global:
   scrape_interval: 5s
 
 scrape_configs:
-  # - job_name: "compress-api"
-  #   static_configs:
-  #     - targets: ["212.28.189.176:8000"]
-  # - job_name: "bioinnova-api"
-  #   static_configs:
-  #     - targets: ["212.28.189.176:8001"]
-  - job_name: "aiaxio-api"
+  - job_name: "safefoods-api"
     static_configs:
-      - targets: ["api.aiaxio.com"]
-  # - job_name: "pqsjapan"
-  #   static_configs:
-  #     - targets: ["pqsjapan.jp"]
+      - targets: ["api.safefoods.com.bd"]
+  - job_name: "safefoods-api-dev"
+    static_configs:
+      - targets: ["safefoods-app:8000"]
